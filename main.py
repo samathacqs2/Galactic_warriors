@@ -20,7 +20,7 @@ def draw_text(surface, text, size, x, y):
 	surface.blit(text_surface, text_rect)
 
 def draw_shield_bar(surface, x, y, percentage):
-	BAR_LENGHT = 100
+	BAR_LENGHT = 200
 	BAR_HEIGHT = 10
 	fill = (percentage / 100) * BAR_LENGHT
 	border = pygame.Rect(x, y, BAR_LENGHT, BAR_HEIGHT)
@@ -137,8 +137,13 @@ def show_go_screen():
 	draw_text(screen, "Mueve tu nave de un lado a otro con las teclas de izquierda y derecha.", 22, WIDTH // 2, HEIGHT // 2.3)
 	draw_text(screen, "Usa la barra espaciadora para disparar láseres a las naves enemigas.", 22, WIDTH // 2, HEIGHT // 2)
 	draw_text(screen, "¡Consigue la mayor puntuación!", 22, WIDTH // 2, HEIGHT // 1.6)
-	draw_text(screen, "Press Key", 27, WIDTH // 2, HEIGHT * 3/4)
+	draw_text(screen, "", 27, WIDTH // 2, HEIGHT * 3/4)
 	draw_text(screen, "MODO 1       MODO 2       MODO 3       MODO 4", 22, WIDTH // 2, HEIGHT // 1.15)
+	
+	mode1 = False
+	mode2 = False
+	mode3 = False
+	mode4 = True
 	
 	pygame.display.flip()
 	waiting = True
@@ -151,28 +156,50 @@ def show_go_screen():
 				# Si el usuario hace clic en un botón
 				if boton1.collidepoint(event.pos):
 					print("Opción 1 seleccionada")
-					mode1 == False
+					mode1 == True
 					waiting = False
 					
 				elif boton2.collidepoint(event.pos):
 					print("Opción 2 seleccionada")
-					mode2 = False 
+					mode2 == True
 					waiting = False
 					
 				elif boton3.collidepoint(event.pos):
 					print("Opción 3 seleccionada")
-					mode3 = False
+					mode3 == True
 					waiting = False
 					
 				elif boton4.collidepoint(event.pos):
 					print("Opción 4 seleccionada")
-					mode4 = False
+					mode4 == True
 					waiting = False
+     
+	return mode1, mode2, mode3, mode4
+
+# Cargar imagen de fondo
+background = pygame.image.load("resources/background.png").convert()
+
+mode1, mode2, mode3, mode4 = show_go_screen()
 
 meteor_images = []
-meteor_list = ["resources/meteorGrey_big1.png", "resources/meteorGrey_big2.png", "resources/meteorGrey_big3.png", "resources/meteorGrey_big4.png",
-				"resources/meteorGrey_med1.png", "resources/meteorGrey_med2.png", "resources/meteorGrey_small1.png", "resources/meteorGrey_small2.png",
-				"resources/meteorGrey_tiny1.png", "resources/meteorGrey_tiny2.png"]
+meteor_list = []
+if mode1:
+	meteor_list = ["resources/meteorGrey_big1p.png", "resources/meteorGrey_big2p.png", "resources/meteorGrey_big3p.png",
+					"resources/meteorGrey_med1p.png", "resources/meteorGrey_med2p.png", "resources/meteorGrey_small1.png",
+					"resources/meteorGrey_small2.png", "resources/meteorGrey_tiny1p.png", "resources/meteorGrey_tiny2.png"]
+elif mode2:
+	meteor_list = ["resources/meteorGrey_big3.png", "resources/meteorGrey_med1.png", "resources/meteorGrey_med2.png"]
+elif mode3:
+	meteor_list = ["resources/meteorGrey_big1.png", "resources/meteorGrey_big2.png", "resources/meteorGrey_big1p.png",
+				"resources/meteorGrey_med2p.png", "resources/meteorGrey_small1.png", "resources/meteorGrey_small2.png",
+				"resources/meteorGrey_tiny1.png", "resources/meteorGrey_tiny2.png", "resources/meteorGrey_big4.png",
+				"resources/meteorGrey_med1p.png", "resources/meteorGrey_med2.png", "resources/meteorGrey_small1.png", "resources/meteorGrey_small2.png",
+				"resources/meteorGrey_tiny1p.png"]
+elif mode4:
+	meteor_list = ["resources/meteorGrey_big1.png", "resources/meteorGrey_big2.png", "resources/meteorGrey_big3.png", "resources/meteorGrey_big4.png",
+				"resources/meteorGrey_med1.png", "resources/meteorGrey_med2.png", 
+				"resources/meteorGrey_tiny1.png"]
+
 for img in meteor_list:
 	meteor_images.append(pygame.image.load(img).convert())
 
@@ -186,8 +213,7 @@ for i in range(9):
 	img_scale = pygame.transform.scale(img, (70,70))
 	explosion_anim.append(img_scale)
 
-# Cargar imagen de fondo
-background = pygame.image.load("resources/background.png").convert()
+
 
 # Cargar sonidos
 laser_sound = pygame.mixer.Sound("resources/laser5.ogg")
@@ -213,17 +239,12 @@ pygame.mixer.music.play(loops=-1)
 
 
 #### ----------GAME
-game_over = False
-
-mode1 = True
-mode2 = True
-mode3 = True
-mode4 = True
+game_over = True
 
 running = True
 while running:
 	if game_over:
-
+		
 		show_go_screen()
 
 		game_over = False
@@ -240,66 +261,6 @@ while running:
 
 		score = 0
 
-#-------------------------------------------------JEFFERSON----------------------------
-	elif mode1:
-
-		show_go_screen()
-
-		mode1 = False
-		all_sprites = pygame.sprite.Group()
-		meteor_list = pygame.sprite.Group()
-		bullets = pygame.sprite.Group()
-
-		player = Player()
-		all_sprites.add(player)
-		for i in range(8):
-			meteor = Meteor()
-			all_sprites.add(meteor)
-			meteor_list.add(meteor)
-
-		score = 0
-
-
-
-#-------------------------------------------------MILAGROS----------------------------
-	elif mode3:
-
-		show_go_screen()
-
-		mode3 = False
-		all_sprites = pygame.sprite.Group()
-		meteor_list = pygame.sprite.Group()
-		bullets = pygame.sprite.Group()
-
-		player = Player()
-		all_sprites.add(player)
-		for i in range(8):
-			meteor = Meteor()
-			all_sprites.add(meteor)
-			meteor_list.add(meteor)
-
-		score = 0
-
-#-------------------------------------------------ANDRÉS----------------------------
-	elif mode4:
-
-		show_go_screen()
-
-		mode4 = False
-		all_sprites = pygame.sprite.Group()
-		meteor_list = pygame.sprite.Group()
-		bullets = pygame.sprite.Group()
-
-		player = Player()
-		all_sprites.add(player)
-		for i in range(8):
-			meteor = Meteor()
-			all_sprites.add(meteor)
-			meteor_list.add(meteor)
-
-		score = 0
-
-
 	clock.tick(60)
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
@@ -314,8 +275,12 @@ while running:
 
 	#colisiones - meteoro - laser
 	hits = pygame.sprite.groupcollide(meteor_list, bullets, True, True)
+
+	score_options = [50, 100, 200, -50, -25, 75]
+
 	for hit in hits:
-		score += 100
+		random_score = random.choice(score_options)
+		score += random_score
 		#explosion_sound.play()
 		explosion = Explosion(hit.rect.center)
 		all_sprites.add(explosion)
@@ -327,7 +292,7 @@ while running:
 	# Checar colisiones - jugador - meteoro
 	hits = pygame.sprite.spritecollide(player, meteor_list, True)
 	for hit in hits:
-		player.shield -= 25
+		player.shield -= 10
 		meteor = Meteor()
 		all_sprites.add(meteor)
 		meteor_list.add(meteor)
@@ -342,83 +307,8 @@ while running:
 	draw_text(screen, str(score), 25, WIDTH // 2, 10)
 
 	# Escudo.
-	draw_shield_bar(screen, 5, 5, player.shield)
+	draw_shield_bar(screen, 10, 10, player.shield)
 
 	pygame.display.flip()
 
 #-------------------------------------------------SAMANTHA----------------------------
-	mode2
-
-	def modo2():
-		show_go_screen()
-		mode4 = False
-		all_sprites = pygame.sprite.Group()
-		meteor_list = pygame.sprite.Group()
-		bullets = pygame.sprite.Group()
-		player = Player()
-		all_sprites.add(player)
-		for i in range(8):
-			meteor = Meteor()
-			all_sprites.add(meteor)
-			meteor_list.add(meteor)
-			big_figure = BigFigure()
-			all_sprites.add(big_figure)
-			meteor_list.add(big_figure)
-
-			score = 0
-			clock.tick(60)
-
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					running = False
-				elif event.type == pygame.KEYDOWN:
-					if event.key == pygame.K_SPACE:
-						player.shoot()
-
-			all_sprites.update()
-
-			#colisiones - meteoro - laser
-			hits = pygame.sprite.groupcollide(meteor_list, bullets, True, True)
-			for hit in hits:
-				if isinstance(hit, BigFigure):
-					big_figure.hit_points -= 1
-					if big_figure.hit_points <= 0:
-						score += 500
-						explosion = Explosion(hit.rect.center)
-						all_sprites.add(explosion)
-						big_figure.kill()
-						big_explosion = Explosion(hit.rect.center)
-						all_sprites.add(big_explosion)
-						explosion_sound.play()
-				else:
-					score += 10
-					explosion = Explosion(hit.rect.center)
-					all_sprites.add(explosion)
-					meteor = Meteor()
-					all_sprites.add(meteor)
-					meteor_list.add(meteor)
-
-			# Checar colisiones - jugador - meteoro
-			hits = pygame.sprite.spritecollide(player, meteor_list, True)
-			for hit in hits:
-				if isinstance(hit, BigFigure):
-					player.shield -= 50
-				else:
-					player.shield -= 25
-				meteor = Meteor()
-				all_sprites.add(meteor)
-				meteor_list.add(meteor)
-				if player.shield <= 0:
-					game_over = True
-
-			screen.blit(background, [0, 0])
-
-			all_sprites.draw(screen)
-
-			#Marcador
-			draw_text(screen, str(score), 25, WIDTH // 2, 10)
-
-			# Escudo.
-			draw_shield_bar(screen, 5, 5, player.shield)
-
-			pygame.display.flip()
